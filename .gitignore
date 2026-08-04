@@ -1,0 +1,12 @@
+# Terraform state can contain sensitive values (and always contains resource
+# metadata). Never commit it. Use a remote backend (GCS) for real projects.
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+crash.log
+*.tfvars
+!*.tfvars.example
+
+# Local scratch
+*.log
