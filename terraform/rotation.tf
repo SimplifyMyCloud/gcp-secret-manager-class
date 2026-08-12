@@ -24,6 +24,9 @@ resource "google_pubsub_topic_iam_member" "sm_publishes" {
   topic   = google_pubsub_topic.rotation.name
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:${google_project_service_identity.secretmanager.email}"
+
+  # Ensure the service agent has propagated before we bind IAM to it.
+  depends_on = [time_sleep.wait_for_service_agent]
 }
 
 # The "Joshua" backdoor password, configured to fire a rotation reminder

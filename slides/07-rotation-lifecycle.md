@@ -33,7 +33,16 @@ resource "google_secret_manager_secret" "rotating_api_key" {
 }
 ```
 
-The Secret Manager **service agent** needs `pubsub.publisher` on the topic (also in Terraform).
+The Secret Manager **service agent** needs `pubsub.publisher` on the topic (also in Terraform). Live config on the deployed secret:
+
+```yaml
+# gcloud secrets describe wargames-joshua-backdoor --format="yaml(topics,rotation)"
+rotation:
+  nextRotationTime: '2026-09-01T00:00:00Z'
+  rotationPeriod: 2592000s
+topics:
+- name: projects/simplifymycloud-dev/topics/wargames-rotation-events
+```
 
 > **Speaker notes:** Two gotchas encoded here: (1) the service agent must have publish rights on the topic *before* the secret references it, or creation fails — that's why Terraform has an explicit dependency. (2) `next_rotation_time` must be a future timestamp; we pin it rather than compute `now()+30d` so Terraform doesn't show a perpetual diff on every plan.
 

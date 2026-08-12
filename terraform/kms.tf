@@ -40,6 +40,9 @@ resource "google_kms_crypto_key_iam_member" "sm_uses_key" {
   crypto_key_id = google_kms_crypto_key.secret_key.id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member        = "serviceAccount:${google_project_service_identity.secretmanager.email}"
+
+  # Ensure the service agent has propagated before we bind IAM to it.
+  depends_on = [time_sleep.wait_for_service_agent]
 }
 
 # A CMEK-encrypted secret (the "war plan"), pinned to one region and one key.

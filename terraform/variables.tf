@@ -34,3 +34,13 @@ variable "first_rotation_time" {
   type        = string
   default     = "2026-09-01T00:00:00Z"
 }
+
+# To run the least-privilege demo you IMPERSONATE the WOPR service account,
+# which requires roles/iam.serviceAccountTokenCreator ON that SA. Owner does
+# NOT grant this. Set this to the presenter's identity to enable the demo.
+# e.g. "user:you@example.com". Empty string = skip the binding.
+variable "demo_impersonator" {
+  description = "Member allowed to impersonate the WOPR SA for the impersonation demo. Empty to skip."
+  type        = string
+  default     = ""
+}

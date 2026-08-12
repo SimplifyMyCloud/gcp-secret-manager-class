@@ -38,13 +38,16 @@ Why? A `secret_version` resource stores the plaintext in **`terraform.tfstate`**
 # What `apply` created
 
 ```
-db_password_secret_id       = "wargames-launch-code"
-app_service_account         = "wargames-wopr@…iam.gserviceaccount.com"
-cmek_secret_id              = "wargames-cmek-warplan"
-kms_key                     = "…/cryptoKeys/wargames-key"
-rotating_secret_id          = "wargames-joshua-backdoor"
-rotation_topic              = "…/topics/wargames-rotation-events"
-secretmanager_service_agent = "service-…@gcp-sa-secretmanager.iam…"
+Apply complete! Resources: 11 added, 0 changed, 0 destroyed.
+
+Outputs:
+launch_code_secret_id       = "wargames-launch-code"
+wopr_service_account        = "wargames-wopr@simplifymycloud-dev.iam.gserviceaccount.com"
+cmek_warplan_secret_id      = "wargames-cmek-warplan"
+kms_key                     = ".../keyRings/wargames-keyring/cryptoKeys/wargames-key"
+joshua_backdoor_secret_id   = "wargames-joshua-backdoor"
+rotation_topic              = ".../topics/wargames-rotation-events"
+secretmanager_service_agent = "service-288261943767@gcp-sa-secretmanager.iam.gserviceaccount.com"
 ```
 
 Three secrets, a consumer identity, a KMS key, and a Pub/Sub topic — all as code.

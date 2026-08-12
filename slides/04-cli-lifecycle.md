@@ -45,9 +45,9 @@ gcloud secrets versions list wargames-launch-code \
 ```
 
 ```
-NAME  STATE     CREATE_TIME
-2     ENABLED   2026-08-03T…      ← latest
-1     ENABLED   2026-08-03T…
+NAME  STATE    CREATED
+2     enabled  2026-08-12T18:57:57      ← latest
+1     enabled  2026-08-12T18:57:55
 ```
 
 > **Speaker notes:** There is no "edit". Every change is a new version, giving you a complete, auditable history and instant rollback (just re-point apps or disable the bad version). This append-only model is what makes rotation safe.
@@ -65,8 +65,14 @@ gcloud secrets versions destroy 1 --secret=wargames-launch-code
 ```
 
 ```
-Disabled version [1]…
-Destroyed version [1]…   # state is now DESTROYED; row still visible
+Disabled version [1] of the secret [wargames-launch-code].
+Destroyed version [1] of the secret [wargames-launch-code].
+```
+
+```
+NAME  STATE
+2     enabled       ← still readable
+1     destroyed     ← payload gone, metadata (this row) remains
 ```
 
 > **Speaker notes:** The disable-then-destroy pattern is your rotation safety net. Disable the old version, watch dashboards/logs for anything still trying to use it, and only destroy after a drain window. Destroy is permanent — the payload is gone — but the version's metadata sticks around so auditors can see it existed and when it was destroyed.

@@ -39,7 +39,8 @@ gcloud secrets versions access latest --secret=wargames-launch-code \
 # …but is DENIED on a secret it wasn't granted
 gcloud secrets versions access latest --secret=wargames-cmek-warplan \
   --impersonate-service-account=wargames-wopr@…iam.gserviceaccount.com
-# -> PERMISSION_DENIED
+# -> PERMISSION_DENIED: Permission 'secretmanager.versions.access'
+#    denied on resource wargames-cmek-warplan
 ```
 
 > **Speaker notes:** `--impersonate-service-account` lets you test as the app without deploying anything — you assume the SA's identity (you need `serviceAccountTokenCreator` on it). Show the success, then the denial on a different secret. That denial IS least privilege working: same identity, different resource, no access.

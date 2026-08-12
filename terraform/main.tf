@@ -22,6 +22,14 @@ resource "google_project_service_identity" "secretmanager" {
   service  = "secretmanager.googleapis.com"
 }
 
+# The service agent is created asynchronously; IAM bindings that reference it
+# can fail with "service account does not exist" if applied too soon. Wait for
+# it to propagate before granting it rights (on KMS and Pub/Sub).
+resource "time_sleep" "wait_for_service_agent" {
+  depends_on      = [google_project_service_identity.secretmanager]
+  create_duration = "30s"
+}
+
 # ---------------------------------------------------------------------------
 # 1. The main secret: WOPR's launch code (movie value: CPE1704TKS).
 #    NOTE: we create the container only. We deliberately DO NOT create a
@@ -59,4 +67,15 @@ resource "google_secret_manager_secret_iam_member" "wopr_accessor" {
   secret_id = google_secret_manager_secret.launch_code.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.wopr.email}"
+}
+
+# Let the presenter impersonate WOPR for the least-privilege demo. Impersonation
+# requires serviceAccountTokenCreator ON the target SA - a distinct, sensitive
+# permission that Owner does NOT include. Only created if var.demo_impersonator
+# is set.
+resource "google_service_account_iam_member" "impersonator" {
+  count              = var.demo_impersonator == "" ? 0 : 1
+  service_account_id = google_service_account.wopr.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = var.demo_impersonator
 }

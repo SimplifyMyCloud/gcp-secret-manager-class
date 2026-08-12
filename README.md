@@ -25,13 +25,26 @@ slides/      Vanilla-markdown deck modules (--- per slide, import to Google Slid
 | `wargames-joshua-backdoor` | Rotation notifications via Pub/Sub |
 | `wargames-rotation-events` (topic) | Where rotation messages land |
 
-## Deploy (do this on solid wifi)
+## Deploy
 
 ```bash
 cd terraform
 terraform init
-terraform apply
+
+# Terraform needs Application Default Credentials. Either run
+#   gcloud auth application-default login
+# OR hand it a token minted from your gcloud CLI session:
+export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+
+# Set demo_impersonator to enable the least-privilege impersonation demo
+# (grants YOU serviceAccountTokenCreator on the WOPR SA — Owner does NOT
+# include this). Skip it and the impersonation demo won't run.
+terraform apply -var="demo_impersonator=user:you@example.com"
 ```
+
+Note: the `secretmanager.serviceAgent` IAM bindings depend on a `time_sleep`
+because the Secret Manager service agent is created asynchronously and needs a
+moment to propagate before it can be referenced in IAM.
 
 Terraform creates the secret **containers, IAM, CMEK key, and rotation wiring**
 — but **not** the secret values, on purpose (a `secret_version` resource would
@@ -69,16 +82,14 @@ them to the Google Slides notes pane on import).
 
 ---
 
-## Status (as of 2026-08-03, paused mid-flight ✈️)
+## Status (as of 2026-08-12) — ready to present ✅
 
-**Done:**
-- ✅ All Terraform written (`terraform/`) — not yet applied
-- ✅ All demo scripts written (`demos/`) — not yet run live
-- ✅ Slide modules `00`–`08` written with WarGames theme
+- ✅ Terraform applied to `simplifymycloud-dev` (11 resources live)
+- ✅ Demos run live; **real captured output** baked into the slides
+- ✅ Complete deck: slide modules `00`–`10` (WarGames themed)
 
-**TODO tomorrow (needs good wifi):**
-- ⏳ `terraform apply` into `simplifymycloud-dev` and run the demos live
-- ⏳ Replace the **representative** command output in the slides with the
-      **real captured** output from the live run
-- ⏳ Write slide modules `09` (best practices & gotchas) and `10`
-      (wrap-up + CLI cheat sheet)
+**Teardown after the session:**
+
+```bash
+cd terraform && terraform destroy -var="demo_impersonator=user:you@example.com"
+```

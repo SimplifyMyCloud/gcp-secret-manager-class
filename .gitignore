@@ -3,10 +3,16 @@
 *.tfstate
 *.tfstate.*
 .terraform/
-.terraform.lock.hcl
 crash.log
 *.tfvars
 !*.tfvars.example
+
+# Saved plan files are binary and can embed sensitive values — never commit.
+tfplan
+*.tfplan
+
+# The provider lock file (.terraform.lock.hcl) is intentionally NOT ignored —
+# commit it so provider versions are pinned and reproducible.
 
 # Local scratch
 *.log
