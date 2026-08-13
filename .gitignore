@@ -21,3 +21,7 @@ tfplan
 deck.md
 deck-full.md
 *.import.md
+
+# Slide build outputs (present from markdown; never commit binaries/html)
+*.pptx
+*.html
