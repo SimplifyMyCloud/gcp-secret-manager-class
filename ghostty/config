@@ -1,37 +1,35 @@
 # ─────────────────────────────────────────────────────────────────────────────
 #  W O P R   ·   green-phosphor CRT profile for Ghostty
 #  For the GCP Secret Manager / WarGames classroom demo.
-#  Install: see ghostty/README.md  (copy this + wopr-crt.glsl to ~/.config/ghostty/)
+#
+#  NOTE: Ghostty does NOT support trailing/inline comments — every comment must
+#  be on its own line. Keep it that way or startup will error.
+#  Install: see ghostty/README.md (copy this + wopr-crt.glsl to ~/.config/ghostty/)
 # ─────────────────────────────────────────────────────────────────────────────
 
-# ── Font (blocky / old-school) ───────────────────────────────────────────────
-# Best look needs a bitmap-style font. Easiest install (Homebrew):
-#   brew install --cask font-3270-nerd-font
-# For maximum DOS/terminal authenticity, also grab "Px437 IBM VGA8" from
-# The Ultimate Oldschool PC Font Pack (int10h.org).
-# Verify the exact family name with:  ghostty +list-fonts | grep -iE '3270|VGA'
+# ── Font (blocky / old-school) ──
+# Easiest install:  brew install --cask font-3270-nerd-font
+# For extra DOS authenticity add "Px437 IBM VGA8" (int10h.org oldschool pack).
+# Verify the family name:  ghostty +list-fonts | grep -iE '3270|VGA'
 font-family = "3270 Nerd Font"
 font-family = "Px437 IBM VGA8"
-font-family = "Menlo"                 # safe fallback if neither retro font is installed
-font-size = 16
-font-thicken = true                   # macOS: fatten the strokes → blockier
-font-feature = -liga                  # no ligatures on a terminal from 1983
-font-feature = -calt
-
+font-family = "Menlo"
+# Big-screen friendly. Bump to 22-24 for a large room.
+font-size = 20
+# macOS: fatten the strokes for a blockier look
+font-thicken = true
 # A touch of extra line height for that scanline-gap feel
 adjust-cell-height = 8%
 
-# ── Colors: monochrome phosphor green ────────────────────────────────────────
+# ── Colors: monochrome phosphor green ──
 # Everything renders as brightness levels of green, like a single-gun P1 tube.
-# (Want amber instead? Swap greens for #ffb000 family — see README.)
+# Want amber instead? See ghostty/README.md.
 background = #001100
 foreground = #33ff33
 cursor-color = #33ff33
-cursor-text  = #001100
+cursor-text = #001100
 selection-background = #33ff33
 selection-foreground = #001100
-
-# 16-color ANSI palette, all graded to green so red/blue/etc read as brightness
 palette = 0=#001100
 palette = 1=#009900
 palette = 2=#00cc00
@@ -49,21 +47,23 @@ palette = 13=#44dd44
 palette = 14=#55ee55
 palette = 15=#ccffcc
 
-# ── Cursor ───────────────────────────────────────────────────────────────────
+# ── Cursor ──
 cursor-style = block
 cursor-style-blink = true
 
-# ── CRT shader (scanlines + glow + slight curvature) ─────────────────────────
-# Static (no strobe) — safe for projectors and photosensitive viewers.
+# ── CRT shader (scanlines + glow + curvature) ──
+# Static (no strobe) — projector- and photosensitivity-safe.
 # Comment this line out if text clips at the corners on a projector.
 custom-shader = wopr-crt.glsl
 custom-shader-animation = false
 
-# ── Window / immersion ───────────────────────────────────────────────────────
-background-opacity = 1.0               # CRT wants full opacity for contrast
+# ── Window / immersion ──
+# CRT wants full opacity for contrast.
+background-opacity = 1.0
 window-padding-x = 16
 window-padding-y = 14
 window-padding-balance = true
 mouse-hide-while-typing = true
 bold-is-bright = true
-macos-titlebar-style = hidden          # full immersion; set to "native" to get the bar back
+# Full immersion; set to "native" to get the title bar back.
+macos-titlebar-style = hidden
