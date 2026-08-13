@@ -1,0 +1,69 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  W O P R   ·   green-phosphor CRT profile for Ghostty
+#  For the GCP Secret Manager / WarGames classroom demo.
+#  Install: see ghostty/README.md  (copy this + wopr-crt.glsl to ~/.config/ghostty/)
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Font (blocky / old-school) ───────────────────────────────────────────────
+# Best look needs a bitmap-style font. Easiest install (Homebrew):
+#   brew install --cask font-3270-nerd-font
+# For maximum DOS/terminal authenticity, also grab "Px437 IBM VGA8" from
+# The Ultimate Oldschool PC Font Pack (int10h.org).
+# Verify the exact family name with:  ghostty +list-fonts | grep -iE '3270|VGA'
+font-family = "3270 Nerd Font"
+font-family = "Px437 IBM VGA8"
+font-family = "Menlo"                 # safe fallback if neither retro font is installed
+font-size = 16
+font-thicken = true                   # macOS: fatten the strokes → blockier
+font-feature = -liga                  # no ligatures on a terminal from 1983
+font-feature = -calt
+
+# A touch of extra line height for that scanline-gap feel
+adjust-cell-height = 8%
+
+# ── Colors: monochrome phosphor green ────────────────────────────────────────
+# Everything renders as brightness levels of green, like a single-gun P1 tube.
+# (Want amber instead? Swap greens for #ffb000 family — see README.)
+background = #001100
+foreground = #33ff33
+cursor-color = #33ff33
+cursor-text  = #001100
+selection-background = #33ff33
+selection-foreground = #001100
+
+# 16-color ANSI palette, all graded to green so red/blue/etc read as brightness
+palette = 0=#001100
+palette = 1=#009900
+palette = 2=#00cc00
+palette = 3=#33dd33
+palette = 4=#00aa22
+palette = 5=#22bb22
+palette = 6=#33cc44
+palette = 7=#66ff66
+palette = 8=#114411
+palette = 9=#00cc00
+palette = 10=#33ff33
+palette = 11=#66ff66
+palette = 12=#22cc33
+palette = 13=#44dd44
+palette = 14=#55ee55
+palette = 15=#ccffcc
+
+# ── Cursor ───────────────────────────────────────────────────────────────────
+cursor-style = block
+cursor-style-blink = true
+
+# ── CRT shader (scanlines + glow + slight curvature) ─────────────────────────
+# Static (no strobe) — safe for projectors and photosensitive viewers.
+# Comment this line out if text clips at the corners on a projector.
+custom-shader = wopr-crt.glsl
+custom-shader-animation = false
+
+# ── Window / immersion ───────────────────────────────────────────────────────
+background-opacity = 1.0               # CRT wants full opacity for contrast
+window-padding-x = 16
+window-padding-y = 14
+window-padding-balance = true
+mouse-hide-while-typing = true
+bold-is-bright = true
+macos-titlebar-style = hidden          # full immersion; set to "native" to get the bar back
