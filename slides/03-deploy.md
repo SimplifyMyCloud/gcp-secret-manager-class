@@ -17,5 +17,8 @@ $ gcloud secrets versions access latest --secret=wargames-launch-code
 DL6913THX    ← it lives in the service, added out-of-band
 ```
 
-> **Notes:** The footgun: a `secret_version` resource writes plaintext into state, readable by anyone with the state bucket. Manage policy as code (reviewable PR); inject values via CLI/pipeline. 14 real resources came from this repo; `apply` also emits outputs the demo scripts consume. `.gitignore` blocks state & tfvars.
-> 🔧 LIVE: the two commands above.
+> **Notes:**
+> - Footgun: a `secret_version` resource writes plaintext into state (bucket-readable)
+> - Policy as code (reviewable PR); inject values via CLI/pipeline
+> - `.gitignore` blocks state & tfvars
+> - 🔧 LIVE: the two commands above

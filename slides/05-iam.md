@@ -13,7 +13,10 @@ gcloud secrets add-iam-policy-binding wargames-launch-code \
   --member="serviceAccount:wargames-wopr@…" --role="roles/secretmanager.secretAccessor"
 ```
 
-> **Notes:** Reading the value (`secretAccessor`) ≠ seeing it exists (`viewer`). Resource-scoped IAM keeps a compromised identity's blast radius to one secret. `secretVersionAdder` = write-only rotation role.
+> **Notes:**
+> - Reading the value (`secretAccessor`) ≠ seeing it exists (`viewer`)
+> - Resource-scoped IAM = blast radius of one secret
+> - `secretVersionAdder` = write-only rotation role
 
 ---
 
@@ -29,5 +32,9 @@ gcloud secrets add-iam-policy-binding wargames-launch-code \
 # -> PERMISSION_DENIED: 'secretmanager.versions.access' denied (or it may not exist)
 ```
 
-> **Notes:** Same identity, two secrets, opposite outcomes — least privilege enforcing itself. `--impersonate` = test as the app, no deploy (needs serviceAccountTokenCreator on the SA — even Owner lacks it by default). GCP won't confirm a secret exists to an unauthorized caller. Impersonated reads are audited AS WOPR.
-> 🔧 LIVE: both impersonation calls.
+> **Notes:**
+> - Same identity, two secrets, opposite outcomes = least privilege live
+> - `--impersonate` = test as the app, no deploy (needs tokenCreator; Owner lacks it)
+> - GCP won't confirm a secret exists to an unauthorized caller
+> - Impersonated reads are audited AS WOPR
+> - 🔧 LIVE: both impersonation calls

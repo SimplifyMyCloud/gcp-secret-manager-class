@@ -15,5 +15,8 @@
 | self-hosted Vault | ✅ | ✅ | ✅ | **high** |
 | **Secret Manager** | ✅ IAM | ✅ built-in | ✅ notify | **none** |
 
-> **Notes:** The common flaw in every bad location: no access control, no audit, no rotation, no revocation. Secret Manager is a fully-managed API (built on Cloud KMS) that adds exactly those four. Not a KV store (64 KiB max); reach for Vault only when you need dynamic secrets or multi-cloud.
-> 🔧 LIVE (optional): `gcloud secrets list --filter=name:wargames` → names/dates, never values.
+> **Notes:**
+> - Every bad location shares one flaw: no access control, audit, rotation, or revocation
+> - Secret Manager = managed API (on Cloud KMS) that adds exactly those four
+> - Not a KV store (64 KiB max); Vault only for dynamic secrets / multi-cloud
+> - 🔧 LIVE (optional): `gcloud secrets list --filter=name:wargames` → names, never values

@@ -12,5 +12,8 @@
 - **BigQuery / data** — external-connection SA, Dataflow worker SA, Airflow SM backend all
   get `secretAccessor` and fetch at runtime — **not** job args / pipeline options / metadata DB.
 
-> **Notes:** Every consumer reduces to the same thing: a service account with `secretAccessor` fetching at runtime. The anti-pattern for data folks: a JDBC password in a Dataflow job arg (visible in the job graph) or an Airflow Variable — same leak class as `--data=`. Pin regional secrets for residency.
-> 🔧 LIVE (optional): curl the REST `:access` endpoint with a token → base64 → decode = DL6913THX.
+> **Notes:**
+> - Every consumer = an SA with `secretAccessor` fetching at runtime
+> - Data anti-pattern: JDBC pw in a Dataflow job arg / Airflow Variable (same leak as `--data=`)
+> - Pin regional secrets for residency
+> - 🔧 LIVE (optional): curl REST `:access` → base64 decode = DL6913THX

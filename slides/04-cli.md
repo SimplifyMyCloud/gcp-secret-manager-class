@@ -12,8 +12,10 @@ gcloud secrets versions access 1      --secret=wargames-launch-code   # pinned, 
 - `--data-file=-` = stdin. **Never `--data="secret"`** — that leaks to `ps` & shell history.
 - Apps read **`latest`** (rotation with no redeploy); pin a number only for controlled rollouts.
 
-> **Notes:** `access` is the one sensitive verb — it returns plaintext, needs `secretAccessor`, and is audited. Cache with a short TTL; don't call it per-request.
-> 🔧 LIVE: add + access latest + access 1.
+> **Notes:**
+> - `access` = the one sensitive verb: returns plaintext, needs `secretAccessor`, audited
+> - Cache with a short TTL; don't call it per-request
+> - 🔧 LIVE: add + access latest + access 1
 
 ---
 
@@ -31,5 +33,8 @@ NAME  STATE
 1     destroyed     ← payload gone, metadata row remains for audit
 ```
 
-> **Notes:** No "edit" — only add. Disable→observe→destroy is the rotation safety net. Destroyed versions keep metadata (auditor can see it existed and when it died). Destroyed = also free.
-> 🔧 LIVE: disable v-old on a spare secret, show FAILED_PRECONDITION, then destroy.
+> **Notes:**
+> - No "edit" — only add (append-only)
+> - Disable → observe → destroy = the safety net
+> - Destroyed keeps metadata (audit) and is free
+> - 🔧 LIVE: disable a spare version → FAILED_PRECONDITION → destroy

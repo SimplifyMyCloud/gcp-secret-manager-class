@@ -19,7 +19,9 @@ gcloud secrets versions disable N --secret=NAME   # reversible
 gcloud secrets versions destroy N --secret=NAME   # irreversible
 ```
 
-> **Notes:** ~90% of daily use, and every command was run live today. Workloads are read-dominated — which is why latest + caching + audited reads are the design center.
+> **Notes:**
+> - ~90% of daily use; every command was run live today
+> - Workloads are read-dominated → latest + caching + audited reads = the design center
 
 ---
 
@@ -35,4 +37,7 @@ Secret Manager makes the **secure path the easy path** — runtime fetch, IAM, C
 
 **Thanks — shall we play a game? Questions?**
 
-> **Notes:** You win by not making the risky move. Everything today is real, reproducible, ~$0.39/mo. Take the repo, one `apply`, same lab. (Teardown after class: `terraform destroy -var="demo_impersonator=user:chris@simplifymy.cloud"`.)
+> **Notes:**
+> - You win by not making the risky move
+> - All real, reproducible, ~$0.39/mo — take the repo, one `apply`, same lab
+> - Teardown after class: `terraform destroy -var="demo_impersonator=user:chris@..."`

@@ -4,7 +4,10 @@
 
 Simplify My Cloud · Platform Team
 
-> **Notes:** Everything here runs live in `simplifymycloud-dev` via Terraform + gcloud. Running example: WOPR's nuclear launch code (WarGames, 1982). "Shall we play a game?"
+> **Notes:**
+> - All live in `simplifymycloud-dev` — Terraform + gcloud, no slideware
+> - Running example: WOPR's nuclear launch code (WarGames, 1982)
+> - Opener: "Shall we play a game?"
 
 ---
 
@@ -19,4 +22,7 @@ Simplify My Cloud · Platform Team
 7. **Rotation** — 3 min
 8. **Consuming secrets** — 2 min · Wrap + cheat sheet — 2 min
 
-> **Notes:** One killer live demo per section. Deep-dive material lives in the full 34-slide backup deck if anyone asks. Keep pace — ~1 slide/min.
+> **Notes:**
+> - One killer live demo per section
+> - Deep-dive material → full backup deck if asked
+> - Pace: ~1 slide/min

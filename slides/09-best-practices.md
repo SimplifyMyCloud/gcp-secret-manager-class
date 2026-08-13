@@ -12,4 +12,7 @@
 - CMEK availability is on you · `destroy` is irreversible
 - **64 KiB max** — it's for secrets, not blobs (big file → GCS, its key → Secret Manager)
 
-> **Notes:** Every winning move maps to a demo we ran. Our lab passes all of them (secret-scoped IAM, 0 values in state, DATA_READ on, labeled, rotation automated). Cost: whole lab ≈ $0.39/month — only *active* versions bill, so destroy drained ones.
+> **Notes:**
+> - Every winning move maps to a demo we ran
+> - Our lab passes all: secret-scoped IAM, 0 in state, DATA_READ on, labeled, rotation automated
+> - Cost ≈ $0.39/mo — only *active* versions bill, so destroy drained ones

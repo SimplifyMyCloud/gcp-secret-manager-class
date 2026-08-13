@@ -11,8 +11,11 @@ wargames-launch-code   (container — name + IAM + replication, NO value)
 - Read by number or the alias **`latest`** (newest enabled)
 - States: **ENABLED** → **DISABLED** (reversible) → **DESTROYED** (permanent, metadata remains)
 
-> **Notes:** This is THE mental model. IAM lives on the secret; bytes live on versions. Immutability = free history, instant rollback, safe rotation. Disable is a light switch; destroy is a shredder — disable first, destroy after a drain window.
-> 🔧 LIVE: `gcloud secrets versions list wargames-launch-code` then `... versions access latest` → DL6913THX.
+> **Notes:**
+> - THE mental model: IAM on the secret, bytes on the versions
+> - Immutable = free history, instant rollback, safe rotation
+> - Disable = light switch (reversible); destroy = shredder — disable first
+> - 🔧 LIVE: `versions list wargames-launch-code` → `access latest` → DL6913THX
 
 ---
 
@@ -31,5 +34,7 @@ replication:                     replication:
                                          kmsKeyName: .../wargames-key
 ```
 
-> **Notes:** CMEK requires user-managed replication — key and secret in the same region. Data engineers: pin the secret to the same region as a regional BigQuery/Dataflow dataset for residency.
-> 🔧 LIVE: `gcloud secrets describe wargames-cmek-warplan --format="yaml(replication)"`.
+> **Notes:**
+> - CMEK requires user-managed replication (key + secret, same region)
+> - Data eng: pin the secret to your dataset's region for residency
+> - 🔧 LIVE: `gcloud secrets describe wargames-cmek-warplan --format="yaml(replication)"`
