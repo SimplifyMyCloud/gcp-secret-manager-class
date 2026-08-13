@@ -16,3 +16,8 @@ tfplan
 
 # Local scratch
 *.log
+
+# Generated slide-deck build artifacts (run ./build-deck.sh to regenerate)
+deck.md
+deck-full.md
+*.import.md

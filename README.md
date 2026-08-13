@@ -75,19 +75,45 @@ source demos/00-env.sh          # shared env vars + a friendly WOPR greeting
 
 Run the demo scripts **line-by-line** in class rather than all at once.
 
-## Build the slide deck
+## Build the slide deck (with speaker notes → notes pane)
 
-Each `NN-*.md` is one module. Concatenate for a single import:
+`./build-deck.sh` assembles a deck folder into one import-ready file, converting
+each `> **Notes:**` blockquote into an `<!-- HTML comment -->`. Marp and
+md2googleslides both treat HTML comments as **speaker notes**, so on import they
+land in the notes pane instead of on the slide.
 
 ```bash
-cat slides/*.md > deck.md              # the ~25-30 min presentation deck
-cat longer-version/*.md > deck-full.md # the full 35-slide deep-dive deck
+./build-deck.sh slides         > deck.import.md        # the ~25-30 min deck
+./build-deck.sh longer-version > deck-full.import.md   # the full deep-dive deck
 ```
 
-Convention: `---` separates slides, `#`/`##` is the slide title, and speaker
-notes are the `> **Notes:**` blockquote at the end of each slide (move them to
-the Google Slides notes pane on import). Each slide's notes include a `🔧 LIVE:`
-line naming the gcloud command to run at that point.
+Then get it into Google Slides via either tool:
+
+```bash
+brew install marp-cli && marp deck.import.md --pptx    # -> upload .pptx to Drive, open as Slides
+# or, to push straight to Google Slides via the API:
+md2gslides deck.import.md
+```
+
+Source convention: `---` separates slides, `#`/`##` is the slide title, notes are
+the `> **Notes:**` blockquote at the end of each slide, and each note includes a
+`🔧 LIVE:` line naming the gcloud command to run at that point.
+
+## Run the terminal demo live (`demos/present.sh`)
+
+A WarGames-themed runner that types each command at a `WOPR>` prompt and waits
+for you before executing it live — perfect for pacing the demo on stage.
+
+```bash
+./demos/present.sh              # step through; hit ENTER to run each command
+TYPE_SPEED=0 ./demos/present.sh # disable the typewriter effect (instant)
+GO_WORD=launch ./demos/present.sh   # require typing 'launch'+ENTER instead of bare ENTER
+START=5 ./demos/present.sh      # jump straight to section 5 (IAM)
+```
+
+It walks the same 8 sections as `slides/`, uses only safe/reversible operations
+(disables are re-enabled; nothing is permanently destroyed), and leaves the lab
+healthy for a re-run.
 
 ---
 
