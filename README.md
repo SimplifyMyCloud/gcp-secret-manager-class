@@ -11,9 +11,11 @@ we create, version, access, secure, and rotate.
 
 ```
 terraform/       Infrastructure as code — secret containers, IAM, CMEK, rotation
-demos/           Runnable gcloud walkthroughs (run line-by-line in class)
+demos/           Runnable gcloud walkthroughs + present.sh (interactive live runner)
 slides/          PRESENTATION deck — 19 slides, ~25-30 min (--- per slide, Google Slides)
 longer-version/  Full 35-slide deep-dive deck (backup / appendix / self-study)
+ghostty/         Optional: green-phosphor CRT terminal profile (see ghostty/README.md)
+build-deck.sh    Assemble a deck → import-ready markdown (notes → speaker-notes pane)
 ```
 
 Two decks, same content, different depth:
