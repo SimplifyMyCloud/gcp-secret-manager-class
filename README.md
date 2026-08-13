@@ -10,10 +10,17 @@ we create, version, access, secure, and rotate.
 ## Repository layout
 
 ```
-terraform/   Infrastructure as code — secret containers, IAM, CMEK, rotation
-demos/       Runnable gcloud walkthroughs (run line-by-line in class)
-slides/      Vanilla-markdown deck modules (--- per slide, import to Google Slides)
+terraform/       Infrastructure as code — secret containers, IAM, CMEK, rotation
+demos/           Runnable gcloud walkthroughs (run line-by-line in class)
+slides/          PRESENTATION deck — 19 slides, ~25-30 min (--- per slide, Google Slides)
+longer-version/  Full 35-slide deep-dive deck (backup / appendix / self-study)
 ```
+
+Two decks, same content, different depth:
+- **`slides/`** is the tight deck you actually present — one killer live demo per
+  section, ~25-30 min. This is the default.
+- **`longer-version/`** is the exhaustive 35-slide version (every demo, every deep
+  dive). Use it as speaker prep, as a backup for deep questions, or for self-study.
 
 ## The example resources (all prefixed `wargames-`)
 
@@ -70,15 +77,17 @@ Run the demo scripts **line-by-line** in class rather than all at once.
 
 ## Build the slide deck
 
-Each `slides/NN-*.md` is one module. Concatenate for a single import:
+Each `NN-*.md` is one module. Concatenate for a single import:
 
 ```bash
-cat slides/*.md > deck.md
+cat slides/*.md > deck.md              # the ~25-30 min presentation deck
+cat longer-version/*.md > deck-full.md # the full 35-slide deep-dive deck
 ```
 
 Convention: `---` separates slides, `#`/`##` is the slide title, and speaker
-notes are the `> **Speaker notes:**` blockquote at the end of each slide (move
-them to the Google Slides notes pane on import).
+notes are the `> **Notes:**` blockquote at the end of each slide (move them to
+the Google Slides notes pane on import). Each slide's notes include a `🔧 LIVE:`
+line naming the gcloud command to run at that point.
 
 ---
 

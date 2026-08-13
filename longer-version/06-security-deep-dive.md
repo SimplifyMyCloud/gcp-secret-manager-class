@@ -42,18 +42,23 @@ replication:
 # Security deep dive: the CMEK kill switch
 
 ```bash
-# Disable the KMS key version → CMEK secret becomes UNREADABLE immediately
+# Disable the KMS key version → new decryptions of the CMEK secret fail
 gcloud kms keys versions disable 1 \
   --key=wargames-key --keyring=wargames-keyring --location=us-central1
 
 gcloud secrets versions access latest --secret=wargames-cmek-warplan
 # -> FAILED_PRECONDITION: Failed precondition on Cloud KMS resource …
 #    /cryptoKeyVersions/1 is not enabled, current state is: DISABLED
+#    NOTE: not instant — Secret Manager caches recently-read payloads,
+#    so reads can succeed for seconds–minutes until the cache expires.
 
 # Re-enable to restore access; DESTROY the key = permanent crypto-shred
 ```
 
-> **Speaker notes:** This is the "break glass" control. Suspect a secret is compromised and being actively read? Disable the key — every read fails in seconds, globally, regardless of who holds `secretAccessor`. Re-enable when safe. Destroying the key version is a cryptographic shred: the ciphertext is still on disk but is now unrecoverable noise. IAM revocation stops *future* grants; the key kill switch stops *everyone right now*.
+**For an immediate cutoff, combine controls:** disable the *version*
+(instant, SM layer) + revoke IAM (`secretAccessor`) + disable the *key*.
+
+> **Speaker notes:** This is the "break glass" control — but be honest about timing. Secret Manager caches decrypted payloads of recently-accessed versions, so disabling the KMS key does NOT instantly block reads that hit that warm cache — it can take seconds to a few minutes to bite (I've seen both live). What it guarantees is that no NEW decryption happens once the cache lapses, and it sets up the crypto-shred (destroy the key = ciphertext becomes unrecoverable noise). For a truly immediate stop during an incident, layer the controls: disable the secret VERSION (that one is instant — it fails at the Secret Manager layer before KMS is ever consulted), revoke `secretAccessor`, and disable the key. Defense in depth, not a single magic switch.
 
 ---
 

@@ -1,22 +1,22 @@
 # GCP Secret Manager
 
-### Storing secrets the right way — a hands-on 30 minutes
+### Storing secrets the right way — a live 25 minutes
 
 Simplify My Cloud · Platform Team
 
-> **Speaker notes:** Welcome. This is a hands-on session — everything you'll see is deployed live in `simplifymycloud-dev` with Terraform and driven from the `gcloud` CLI. By the end you'll know what Secret Manager is, how to deploy and use it, how its security model actually works, and the patterns to consume secrets safely from apps, data pipelines, and BigQuery workloads.
+> **Notes:** Everything here runs live in `simplifymycloud-dev` via Terraform + gcloud. Running example: WOPR's nuclear launch code (WarGames, 1982). "Shall we play a game?"
 
 ---
 
-# Agenda (~30 min)
+# Agenda (~25 min)
 
-1. **Why** Secret Manager exists — 3 min
-2. **Core concepts** — secrets, versions, replication — 4 min
-3. **Deploy** with Terraform — 4 min
-4. **CLI lifecycle** — create / version / access / destroy — 5 min
-5. **IAM & least privilege** — 4 min
-6. **Security deep dive** — encryption, CMEK, audit logs — 5 min
-7. **Rotation & lifecycle** — 3 min
-8. **Consuming secrets** (apps, SRE, BigQuery/data) — 2 min
+1. **Why** Secret Manager — 2 min
+2. **Concepts** — secret vs version, replication — 3 min
+3. **Deploy as code** — 2 min
+4. **CLI lifecycle** — 3 min
+5. **IAM & least privilege** — 3 min
+6. **Security** — encryption, CMEK kill switch, audit — 5 min
+7. **Rotation** — 3 min
+8. **Consuming secrets** — 2 min · Wrap + cheat sheet — 2 min
 
-> **Speaker notes:** Keep an eye on the clock. The two deep dives (security + IAM) are where the security engineers lean in; the consuming-secrets section is where app and data engineers get their patterns. Everything is a real command you can re-run.
+> **Notes:** One killer live demo per section. Deep-dive material lives in the full 34-slide backup deck if anyone asks. Keep pace — ~1 slide/min.
