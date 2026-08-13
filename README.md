@@ -105,11 +105,15 @@ A WarGames-themed runner that types each command at a `WOPR>` prompt and waits
 for you before executing it live — perfect for pacing the demo on stage.
 
 ```bash
-./demos/present.sh              # step through; hit ENTER to run each command
+./demos/present.sh              # step through; type 'pencil'+ENTER to run each command
+GO_WORD= ./demos/present.sh     # advance with a bare ENTER instead
 TYPE_SPEED=0 ./demos/present.sh # disable the typewriter effect (instant)
-GO_WORD=launch ./demos/present.sh   # require typing 'launch'+ENTER instead of bare ENTER
 START=5 ./demos/present.sh      # jump straight to section 5 (IAM)
 ```
+
+The advance word defaults to **`pencil`** — the password David finds written on
+the school desk in *WarGames* to hack in and change his grades: a written-down
+password, i.e. the exact anti-pattern this whole talk is about.
 
 It walks the same 8 sections as `slides/`, uses only safe/reversible operations
 (disables are re-enabled; nothing is permanently destroyed), and leaves the lab

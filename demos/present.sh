@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # present.sh — WarGames-themed interactive demo runner for the Secret Manager class.
 #
-#   ./demos/present.sh            # step through with ENTER
+#   ./demos/present.sh            # step through; type 'pencil'+ENTER per step (WarGames)
+#   GO_WORD= ./demos/present.sh   # advance with a bare ENTER instead
 #   TYPE_SPEED=0 ./demos/present.sh   # no typewriter effect (instant)
-#   GO_WORD=launch ./demos/present.sh # require typing 'launch'+ENTER instead of bare ENTER
 #   START=5 ./demos/present.sh     # jump straight to section 5 (IAM)
 #
 # Each step: the command is "typed" at a WOPR> prompt, then waits for you.
-# Hit ENTER (or type your GO_WORD) to execute it live. Ctrl-C to bail.
+# Type the GO_WORD ('pencil' by default) + ENTER to execute it live. Ctrl-C to bail.
 #
 # NOTE: intentionally NOT `set -e` — some demos fail on purpose (denied access).
 set -uo pipefail
@@ -24,7 +24,10 @@ else
 fi
 trap 'printf "%s" "$RESET"' EXIT
 TYPE_SPEED="${TYPE_SPEED:-0.010}"   # seconds/char; 0 disables
-GO_WORD="${GO_WORD:-}"              # empty = bare ENTER; else must type this word
+# 'pencil' = the password David finds written on the school desk to hack in
+# (WarGames). Fittingly, a written-down password — the exact anti-pattern this
+# talk warns against. Override: GO_WORD=foo, or GO_WORD= for bare ENTER.
+GO_WORD="${GO_WORD-pencil}"
 START="${START:-1}"; SECTION=0
 
 typeit() { # type a string like a human
@@ -54,7 +57,8 @@ ${GREEN}${BOLD}
         GCP Secret Manager · live demo console
 
         SHALL WE PLAY A GAME?
-${RESET}${DIM}   project: ${PROJECT_ID}   |   ENTER to advance · Ctrl-C to abort${RESET}
+${RESET}${YELLOW}   LOGON: the password is written on the desk...${RESET}
+${DIM}   project: ${PROJECT_ID}   |   advance each step with '${GO_WORD:-⏎}'   ·   Ctrl-C to abort${RESET}
 BANNER
 wait_go
 
