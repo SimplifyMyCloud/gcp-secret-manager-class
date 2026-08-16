@@ -9,7 +9,8 @@ gcloud secrets versions access latest --secret=wargames-launch-code   # -> CPE17
 gcloud secrets versions access 1      --secret=wargames-launch-code   # pinned, same payload
 ```
 
-- `--data-file=-` = stdin. **Never `--data="secret"`** — that leaks to `ps` & shell history.
+- **The `|` pipes the value into the command's stdin** — `--data-file=-` reads *from* stdin, so the secret never appears as a command argument.
+- **Never `--data="secret"`** — as an argument it leaks to `ps`, shell history, and logs.
 - Apps read **`latest`** (rotation with no redeploy); pin a number only for controlled rollouts.
 
 > **Notes:**
