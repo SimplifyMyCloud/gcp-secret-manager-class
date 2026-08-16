@@ -10,7 +10,7 @@ wargames-launch-code   ← the "repo": name + IAM + replication (NO value)
 
 - **Secret** = the repo — name, access (IAM), where it lives; **never the value**
 - **Version** = a commit — one immutable value; you **add**, never edit
-- **`latest`** = HEAD (newest enabled) · pin a number = `git checkout <sha>`
+- **Pin a version by number** — like a commit hash, just an integer; **`latest`** = newest enabled
 - States: **ENABLED → DISABLED** (reversible) **→ DESTROYED** (permanent, metadata remains)
 
 > **Notes:**
