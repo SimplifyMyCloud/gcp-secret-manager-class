@@ -35,7 +35,9 @@ NAME  STATE
 ```
 
 > **Notes:**
-> - No "edit" — only add (append-only)
-> - Disable → observe → destroy = the safety net
-> - Destroyed keeps metadata (audit) and is free
-> - 🔧 LIVE: disable a spare version → FAILED_PRECONDITION → destroy
+> - **Immutable & append-only** — no "edit," only add (same as a git commit)
+> - **Disable = light switch** (reversible — flip it back) · **destroy = shredder** (permanent)
+> - Golden rule: **disable → watch for breakage → destroy** after a drain window; never destroy blind
+> - Destroy deletes the *payload* but keeps the version's **metadata** → auditors see it existed and when it died (ties to CIS 3.5 secure disposal)
+> - Destroyed versions are **free** — only active versions bill
+> - 🔧 LIVE: disable a version → show `FAILED_PRECONDITION` → destroy → row flips to `destroyed` (watch the error message change)
