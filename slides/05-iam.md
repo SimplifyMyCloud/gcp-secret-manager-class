@@ -14,9 +14,10 @@ gcloud secrets add-iam-policy-binding wargames-launch-code \
 ```
 
 > **Notes:**
-> - Reading the value (`secretAccessor`) ≠ seeing it exists (`viewer`)
-> - Resource-scoped IAM = blast radius of one secret
-> - `secretVersionAdder` = write-only rotation role
+> - Read the *value* (`secretAccessor`) ≠ see it *exists* (`viewer`) — that split is the whole game
+> - Grant on the **secret, not the project** — project-level = skeleton key to every secret
+> - `secretVersionAdder` = write-only (rotation jobs add versions, never read old ones)
+> - Compliance callback: this *is* NIST **AC-6** (least privilege) / CIS **6.1–6.2**, made concrete
 
 ---
 
