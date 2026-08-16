@@ -1,19 +1,24 @@
-# Core concept: Secret vs. Version
+# Secret vs. Version — it's just Git
+
+**Secret = git repo · Version = git commit**
 
 ```
-wargames-launch-code   (container — name + IAM + replication, NO value)
- └── Version 1   "CPE1704TKS"    [DESTROYED]  payload gone, metadata kept
- └── Version 2   "DL6913THX"     [ENABLED]    ← "latest"
+wargames-launch-code   ← the "repo": name + IAM + replication (NO value)
+ └── v1  CPE1704TKS   [DESTROYED]   payload gone, metadata kept
+ └── v2  DL6913THX    [ENABLED]     ← latest  (like HEAD)
 ```
 
-- **Secret** = container: policy, IAM, replication — never the value
-- **Version** = one immutable payload; add a new one, never edit
-- Read by number or the alias **`latest`** (newest enabled)
-- States: **ENABLED** → **DISABLED** (reversible) → **DESTROYED** (permanent, metadata remains)
+- **Secret** = the repo — name, access (IAM), where it lives; **never the value**
+- **Version** = a commit — one immutable value; you **add**, never edit
+- **`latest`** = HEAD (newest enabled) · pin a number = `git checkout <sha>`
+- States: **ENABLED → DISABLED** (reversible) **→ DESTROYED** (permanent, metadata remains)
 
 > **Notes:**
-> - THE mental model: IAM on the secret, bytes on the versions
-> - Immutable = free history, instant rollback, safe rotation
+> - The whole model in one line: **Secret = git repo, Version = git commit**
+> - Name / IAM / replication live on the repo; the bytes live in the commits (versions)
+> - Immutable & append-only → free history, instant rollback, safe rotation (like `git log`)
+> - `latest` = HEAD · `access <N>` = `git checkout <sha>` · `versions list` = `git log`
+> - Analogy is directional — no branching, versions are integers (not SHAs), and truly immutable (no force-push/rewrite)
 > - Disable = light switch (reversible); destroy = shredder — disable first
 > - 🔧 LIVE: `versions list wargames-launch-code` → `access latest` → DL6913THX
 
