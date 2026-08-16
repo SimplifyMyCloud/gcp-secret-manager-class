@@ -26,20 +26,10 @@ wargames-launch-code   ← the "repo": name + IAM + replication (NO value)
 
 # Replication: where the ciphertext lives
 
-- **Automatic** (default) — Google replicates + manages the key. Use this unless you have a reason not to.
-- **User-managed** — you pin the region(s). Required for **data residency** and for **CMEK** (your own key).
-
-```yaml
-# wargames-launch-code           # wargames-cmek-warplan
-replication:                     replication:
-  automatic: {}                    userManaged:
-                                     replicas:
-                                     - location: us-central1
-                                       customerManagedEncryption:
-                                         kmsKeyName: .../wargames-key
-```
+- **Automatic** (default) — Google picks the regions + manages the key. **Use this.**
+- **User-managed** — you pin the region(s); needed for **data residency** or **CMEK** (your own key).
 
 > **Notes:**
-> - CMEK requires user-managed replication (key + secret, same region)
-> - Data eng: pin the secret to your dataset's region for residency
-> - 🔧 LIVE: `gcloud secrets describe wargames-cmek-warplan --format="yaml(replication)"`
+> - "Know it exists + when to switch" — that's the whole slide, keep it moving
+> - User-managed is the prerequisite for CMEK (returns in the Security section)
+> - 🔧 LIVE (optional): `gcloud secrets describe wargames-cmek-warplan --format="yaml(replication)"`
