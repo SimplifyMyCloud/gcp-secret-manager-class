@@ -16,6 +16,10 @@ topics:  [ projects/…/topics/wargames-rotation-events ]
 
 > **Notes:**
 > - SM owns the *when*; you own the *how* (your upstream)
+> - NO HUMAN required: the manual CLI pipe (`printf … | gcloud … add`) is the demo/one-off path only. Production rotation is machine-to-machine
+> - GCP best practice = an event-driven **Cloud Run / Cloud Functions (2nd gen)** handler, triggered by the Pub/Sub notification (Eventarc / push subscription) — NOT cron, NOT a person
+> - It runs as a **dedicated service account with only `secretVersionAdder`** — write-only: can add a new version, CANNOT read existing values (least privilege applied to the rotation job itself)
+> - Two steps inside the handler: ① mint a fresh cred via the upstream admin API → ② add it as a new version (the automation calls the API — you never touch the CLI)
 > - Gotcha: grant SM agent pubsub.publisher BEFORE the secret references the topic
 > - Gotcha: PIN next_rotation_time (not now()+X) or Terraform diffs forever
 
@@ -35,6 +39,9 @@ AFTER    latest (v4) -> joshua-rotated-210547     ← moved, no redeploy
 - Cache with a short TTL so rotation propagates in minutes
 
 > **Notes:**
-> - Payoff of the version model — invisible to consumers
-> - "Joshua" = a static backdoor a kid reused; rotate so a stale copy is worthless
+> - Zero downtime = **overlap, not timing** — old + new both valid at once
+> - Apps read **`latest`** → pointer moves, no redeploy
+> - Old stays **ENABLED** through a drain window → disable/destroy only after everyone's moved
+> - Cache TTL = how fast the drain resolves
+> - "Joshua" = a reused static backdoor; rotate so a stale copy is worthless
 > - 🔧 LIVE: access latest → add version → latest moved, old still works

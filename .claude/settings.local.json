@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gcloud --version)",
+      "Bash(gcloud config *)",
+      "Bash(terraform version *)",
+      "Bash(gcloud projects *)",
+      "Bash(gcloud services *)",
+      "Bash(gcloud secrets *)",
+      "Bash(terraform init *)",
+      "Bash(chmod +x /Users/sandor/Codestuff/GCP/gcp-secret-manager-class/demos/*.sh)",
+      "Bash(pkill -f \"terraform init\")",
+      "Bash(echo \"relaunched pid $!\")",
+      "Bash(git add *)",
+      "Bash(git commit -q -m ' *)"
+    ]
+  }
+}

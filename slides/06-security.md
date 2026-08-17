@@ -1,41 +1,46 @@
-# Security: encryption at rest + CMEK
+# Encryption: where Google-managed keys stop and CMEK starts
 
-- **Always on.** AES-256 before it touches disk. No off switch.
-- **Envelope:** payload ← DEK ← wrapped by a KEK in Cloud KMS.
-- Default KEK is **Google-managed** (zero config). **CMEK** = you own the KEK.
+**Always on** — AES-256, envelope-encrypted (`DEK ← KEK in Cloud KMS`), before it touches disk. No off switch.
 
-**What CMEK buys you:**
-- You control **key rotation** cadence (ours: 90 days, in code)
-- **Separation of duties** — a KMS admin can revoke crypto access independent of secret IAM
-- Required by **PCI / FedRAMP / internal policy**
+**Google-managed KEK — right for ~90%**
+- Zero config, zero cost, auto-rotated, **always available**
+- **Same AES-256 as CMEK** — the crypto is identical
+
+**CMEK — you own the KEK *and its risks***
+- Driven by **data sovereignty & contracts** (SecNumCloud, C5, HYOK) — *not* PCI/HIPAA
+- Lets you **cut Google off** — revoke decryption independent of secret IAM
+- ⚠️ The key is now **your single point of failure** — kill it and every secret it wraps goes dark
 
 > **Notes:**
-> - Envelope (DEK ← KEK): rotate/revoke the KEK without re-encrypting data
-> - CMEK = Google can't decrypt without your key enabled
-> - Only user of our key = the SM service agent — a grant you can revoke
+> - The one-liner: **CMEK changes *who holds the key*, not *how strong the lock is*** — same AES-256 either way
+> - Envelope (DEK ← KEK): rotate/revoke the KEK without re-encrypting the payload — you just re-wrap the tiny DEK
+> - Why Google-managed is an engineering gift: it removes an entire *operational surface* — no rotation jobs, no key-availability risk, no on-call for "the key is gone"
+> - The CMEK trap people forget: your key IS a single point of failure now. Google-managed keys can't take you down; your own key can
+> - When it's genuinely worth it: a regulator/contract requires customer-held keys, OR you need the ability to unilaterally revoke Google's ability to decrypt
+> - Only user of our key = the SM service agent — a grant you can revoke (that's the break-glass on the next slide)
 > - 🔧 LIVE (optional): `gcloud kms keys get-iam-policy wargames-key …`
 
 ---
 
-# The "break glass" controls
+# Containment ladder — DEFCON for a compromised secret
 
-**Need a secret to stop being readable NOW? Layer three controls:**
+| DEFCON | Action | Speed | Reversible? | Use when |
+|---|---|---|---|---|
+| 🔵 **5** | Secret **active** — all versions readable | — | — | Peacetime; normal ops |
+| 🟢 **4** | **Disable the version** — `versions disable` | **Instant** | ✅ Yes | First move — stop the bleeding |
+| 🟡 **3** | **Revoke IAM** — remove `secretAccessor` | Fast | ✅ Yes | Cut off *who* can read it |
+| 🔴 **2** | **Disable the CMEK key** — crypto kill switch | Mins (cache) | ✅ Yes | No *new* decryption, org-wide |
+| ⚪ **1** | **Destroy** — `versions destroy` / destroy key | Permanent | ❌ No | **Break glass** — crypto-shred, gone |
 
-```bash
-# 1) Disable the VERSION — INSTANT (fails at the SM layer, before KMS)
-gcloud secrets versions disable 2 --secret=wargames-cmek-warplan
-#    -> access now returns FAILED_PRECONDITION: DISABLED
-
-# 2) Revoke IAM (secretAccessor)  — stops authorized callers
-# 3) Disable the CMEK KEY — the crypto kill switch (see note on timing)
-```
+**Escalate only as far as you must.** Your fastest option (DEFCON 4) is also your safest — instant *and* reversible.
 
 > **Notes:**
-> - Honest: KMS-key disable is NOT instant — SM caches payloads (secs–mins)
-> - Key disable guarantees no NEW decryption; DESTROY key = permanent crypto-shred
-> - Instant stop = disable the VERSION (SM layer, before KMS)
-> - Defense in depth: version-disable + revoke IAM + disable key
-> - 🔧 LIVE: version disable → instant FAILED_PRECONDITION → re-enable
+> - DEFCON 5 = normal readiness, DEFCON 1 = nuclear — same ladder as our incident response
+> - DEFCON 4 (disable version) is the everyday move: **instant** because it fails at the SM layer, *before* KMS — and reversible, so a false alarm costs you nothing
+> - DEFCON 2 honesty: disabling the KMS key is **NOT instant** — SM caches decrypted payloads for secs–mins. It guarantees no NEW decryption, not an immediate stop
+> - DEFCON 1 is the ONLY true "break glass": destroy = permanent crypto-shred. Version destroy kills one secret; key destroy nukes *every* secret that key wraps
+> - Real break-glass discipline: escalate one level at a time, disable before you destroy, never destroy blind
+> - 🔧 LIVE: DEFCON 4 → `versions disable` → instant `FAILED_PRECONDITION` → re-enable (flip it back, no harm)
 
 ---
 

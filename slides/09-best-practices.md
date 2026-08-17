@@ -1,18 +1,14 @@
-# Best practices & top footguns
+# Two things to remember
 
-**Winning moves:**
-- Grant `secretAccessor` **on the secret, not the project**
-- One secret, one purpose (IAM is per-secret — don't bundle 20 creds)
-- Read `latest` + cache (short TTL) · keep values **out of state**
-- Turn on **DATA_READ** audit logs · label everything · automate rotation
+**📏 It's for *secrets*, not *blobs* — 64 KiB max**
+Passwords, keys, tokens, connection strings. **Not** files.
+Big file → **GCS** · put *its key* → **Secret Manager**.
 
-**Footguns that bite:**
-- `--data="…"` leaks → use `--data-file=-`
-- DATA_READ logs **off by default** → enable proactively
-- CMEK availability is on you · `destroy` is irreversible
-- **64 KiB max** — it's for secrets, not blobs (big file → GCS, its key → Secret Manager)
+**💸 It's basically free — ≈ $0.39/mo**
+You only pay for **active versions**, so `destroy` drained ones.
+No budget excuse not to use it.
 
 > **Notes:**
-> - Every winning move maps to a demo we ran
-> - Our lab passes all: secret-scoped IAM, 0 in state, DATA_READ on, labeled, rotation automated
-> - Cost ≈ $0.39/mo — only *active* versions bill, so destroy drained ones
+> - Everything else today = one habit: runtime fetch, least privilege, rotate, audit — this is just the recap
+> - 64 KiB: it's a vault for the *key to the kingdom*, not the kingdom. Encrypt a big file, store the file in GCS, keep the DEK/password here
+> - Cost: $0.06/active version/mo + tiny access fee — a rounding error. Destroyed versions are free
