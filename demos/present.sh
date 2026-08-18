@@ -8,6 +8,7 @@
 #   START=13 ./demos/present.sh     # jump straight to SLIDE 13 (skip everything before)
 #   CLEAR_SCREEN=0 ./demos/present.sh  # keep scrollback (default clears screen per slide)
 #   INTRO=0 ./demos/present.sh         # skip the WarGames dial-up cold open
+#   STAGE_ID='HACKER@BBS' ./demos/present.sh   # override the on-screen 1980s handle
 #
 # Slide numbers below match the LIVE Google Slides deck (pricing moved to slide 5,
 # so every content slide from "core concepts" on is +1 vs the markdown source).
@@ -41,6 +42,17 @@ TYPE_SPEED="${TYPE_SPEED:-0.010}"   # seconds/char while "typing" a command; 0 d
 STEP_PAUSE="${STEP_PAUSE:-0.4}"     # seconds to breathe between commands within a slide
 CLEAR_SCREEN="${CLEAR_SCREEN:-1}"   # 1 = wipe the screen at each slide so ONLY its demo shows; 0 = keep scrollback
 INTRO="${INTRO:-1}"                 # 1 = play the WOPR dial-up cold open (WarGames first contact); 0 = skip to console
+# On-screen identity mask: swap the presenter's real email for a period-correct
+# handle so the projected audit log & IAM output stay in character and off your
+# real domain. FALKEN@NSA = pre-1983 ARPANET style (dotless, uppercase host) —
+# Dr. Falken at the agency that lives and breathes cryptography. Override at
+# launch with STAGE_ID='...'. The WOPR service-account identity is left intact
+# on purpose (it's the whole point of the impersonation/attribution slides).
+REAL_ID="${REAL_ID:-chris@simplifymy.cloud}"
+STAGE_ID="${STAGE_ID:-FALKEN@NSA}"
+redact() {   # filter: rewrite the real email to the stage handle (no-op if REAL_ID empty)
+  if [ -n "$REAL_ID" ]; then sed "s|${REAL_ID//./\\.}|${STAGE_ID}|g"; else cat; fi
+}
 # 'pencil' = the password David finds written on the school desk to hack in
 # (WarGames). Fittingly, a written-down password — the exact anti-pattern this
 # talk warns against. Override: GO_WORD=foo, or GO_WORD= for bare ENTER.
@@ -166,7 +178,7 @@ run 'gcloud secrets versions enable "$V" --secret="$LAUNCH_SECRET"; echo "restor
 
 # ── SLIDE 11 · IAM: least privilege ──────────────────────────────────────────
 slide 11 "IAM — least privilege, scoped to the secret (not the project)"
-run 'gcloud secrets get-iam-policy "$LAUNCH_SECRET" --format="table(bindings.role, bindings.members)"'
+run 'gcloud secrets get-iam-policy "$LAUNCH_SECRET" --format="table(bindings.role, bindings.members)" | redact'
 
 # ── SLIDE 12 · IAM: become WOPR ──────────────────────────────────────────────
 slide 12 "Prove the boundary — become WOPR (impersonation)"
@@ -178,7 +190,7 @@ run 'gcloud secrets versions access latest --secret="$WARPLAN_SECRET" --imperson
 # ── SLIDE 13 · SECURITY: encryption / CMEK ───────────────────────────────────
 slide 13 "Encryption — where Google-managed keys stop and CMEK starts"
 say "Our CMEK key is used only by the Secret Manager service agent:"
-run 'gcloud kms keys get-iam-policy "$PREFIX-key" --keyring="$PREFIX-keyring" --location="$REGION" --format="table(bindings.role, bindings.members)"'
+run 'gcloud kms keys get-iam-policy "$PREFIX-key" --keyring="$PREFIX-keyring" --location="$REGION" --format="table(bindings.role, bindings.members)" | redact'
 
 # ── SLIDE 14 · SECURITY: DEFCON containment ladder ───────────────────────────
 slide 14 "Containment ladder — DEFCON for a compromised secret"
@@ -189,7 +201,7 @@ run 'gcloud secrets versions enable 1 --secret="$WARPLAN_SECRET"; echo "war plan
 
 # ── SLIDE 15 · SECURITY: audit ───────────────────────────────────────────────
 slide 15 "Every access is audited — attributed by identity"
-run 'gcloud logging read '"'"'protoPayload.serviceName="secretmanager.googleapis.com" AND protoPayload.methodName:"AccessSecretVersion"'"'"' --project="$PROJECT_ID" --freshness=1h --limit=4 --format="value(timestamp.date(%H:%M:%S), protoPayload.authenticationInfo.principalEmail)"'
+run 'gcloud logging read '"'"'protoPayload.serviceName="secretmanager.googleapis.com" AND protoPayload.methodName:"AccessSecretVersion"'"'"' --project="$PROJECT_ID" --freshness=1h --limit=4 --format="value(timestamp.date(%H:%M:%S), protoPayload.authenticationInfo.principalEmail)" | redact'
 
 # ── SLIDE 16 · ROTATION: notify ──────────────────────────────────────────────
 slide 16 "Rotation — Secret Manager notifies (Pub/Sub); YOU rotate"
