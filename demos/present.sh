@@ -7,6 +7,7 @@
 #   STEP_PAUSE=0 ./demos/present.sh    # no pause between commands within a slide
 #   START=13 ./demos/present.sh     # jump straight to SLIDE 13 (skip everything before)
 #   CLEAR_SCREEN=0 ./demos/present.sh  # keep scrollback (default clears screen per slide)
+#   INTRO=0 ./demos/present.sh         # skip the WarGames dial-up cold open
 #
 # Slide numbers below match the LIVE Google Slides deck (pricing moved to slide 5,
 # so every content slide from "core concepts" on is +1 vs the markdown source).
@@ -39,6 +40,7 @@ trap 'printf "%s" "$RESET"' EXIT
 TYPE_SPEED="${TYPE_SPEED:-0.010}"   # seconds/char while "typing" a command; 0 disables
 STEP_PAUSE="${STEP_PAUSE:-0.4}"     # seconds to breathe between commands within a slide
 CLEAR_SCREEN="${CLEAR_SCREEN:-1}"   # 1 = wipe the screen at each slide so ONLY its demo shows; 0 = keep scrollback
+INTRO="${INTRO:-1}"                 # 1 = play the WOPR dial-up cold open (WarGames first contact); 0 = skip to console
 # 'pencil' = the password David finds written on the school desk to hack in
 # (WarGames). Fittingly, a written-down password — the exact anti-pattern this
 # talk warns against. Override: GO_WORD=foo, or GO_WORD= for bare ENTER.
@@ -55,6 +57,40 @@ wait_go() {
   # Type the go-word ONCE to "log on"; after that (UNLOCKED) a bare ⏎ advances.
   if [ -z "$GO_WORD" ] || [ "$UNLOCKED" = "1" ]; then printf " ${DIM}(⏎)${RESET}"; read -r _
   else local g=""; while [ "$g" != "$GO_WORD" ]; do printf " ${DIM}(type '%s'+⏎ to log on)${RESET} " "$GO_WORD"; read -r g; done; UNLOCKED=1; fi
+}
+
+# ── COLD OPEN: David war-dials WOPR + the backdoor logon (WarGames, 1983) ─────
+# Pure theatre before the console. The backdoor password is JOSHUA — a written-
+# down name, the exact anti-pattern this whole talk is about (cf. the demo secret
+# '$BACKDOOR_SECRET'). INTRO=0 skips it for quick rehearsals.
+boot_sequence() {
+  [ "$INTRO" = "0" ] && return 0
+  clear
+  printf "\n${DIM}   IMSAI 8080  ·  300/1200 baud  ·  war-dialer online${RESET}\n\n"; sleep 0.4
+  printf "${DIM}   "; typeit "ATDT 311-555-2368"; printf "${RESET}\n"; sleep 0.5
+  printf "${DIM}   DIALING . . .${RESET}\n"; sleep 0.7
+  printf "${DIM}   CARRIER DETECTED${RESET}\n"; sleep 0.3
+  printf "${GREEN}   CONNECT 1200${RESET}\n\n"; sleep 0.6
+  # First attempt — guess the professor's own name. DENIED. (the "obvious" secret fails.)
+  printf "${GREEN}${BOLD}   LOGON: ${RESET}${GREEN}"; sleep 0.5; typeit "FALKEN"; printf "${RESET}\n\n"; sleep 0.7
+  printf "${RED}${BOLD}   IDENTIFICATION NOT RECOGNIZED BY SYSTEM.${RESET}\n"; sleep 0.6
+  printf "${RED}   --CONNECTION TERMINATED--${RESET}\n\n"; sleep 1.1
+  # Redial and try the backdoor: JOSHUA, the dead son's name left in the code.
+  printf "${DIM}   REDIALING . . .${RESET}\n"; sleep 0.6
+  printf "${GREEN}   CONNECT 1200${RESET}\n\n"; sleep 0.5
+  printf "${GREEN}${BOLD}   LOGON: ${RESET}${GREEN}"; sleep 0.5; typeit "JOSHUA"; printf "${RESET}\n\n"; sleep 0.7
+  printf "${GREEN}${BOLD}   GREETINGS PROFESSOR FALKEN.${RESET}\n\n"; sleep 0.9
+  printf "${DIM}   LIST GAMES${RESET}\n"; sleep 0.3
+  local g
+  for g in "FALKEN'S MAZE" "BLACK JACK" "GIN RUMMY" "HEARTS" "BRIDGE" \
+           "CHECKERS" "CHESS" "POKER" "FIGHTER COMBAT" "GUERRILLA ENGAGEMENT" \
+           "DESERT WARFARE" "AIR-TO-GROUND ACTIONS" \
+           "THEATERWIDE TACTICAL WARFARE" \
+           "THEATERWIDE BIOTOXIC AND CHEMICAL WARFARE"; do
+    printf "${GREEN}      %s${RESET}\n" "$g"; sleep 0.06
+  done
+  printf "\n${YELLOW}${BOLD}      GLOBAL THERMONUCLEAR WAR${RESET}\n\n"; sleep 1.0
+  printf "${DIM}   ...booting WOPR console...${RESET}\n"; sleep 0.9
 }
 
 # slide N "Title" — banner + label + ONE wait for the go-word. Everything after
@@ -84,11 +120,10 @@ run() {
   [ "$STEP_PAUSE" = "0" ] || sleep "$STEP_PAUSE"
 }
 
+boot_sequence
 clear
 cat <<BANNER
 ${GREEN}${BOLD}
-        GREETINGS PROFESSOR FALKEN.
-
         W O P R  —  War Operation Plan Response
         GCP Secret Manager · live demo console
 
