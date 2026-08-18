@@ -3,10 +3,10 @@
 // Static (no time-based flicker) => projector- and photosensitivity-safe.
 // Tune the four *_STRENGTH constants to taste.
 
-const float CURVATURE_STRENGTH = 0.06;  // barrel distortion; 0.0 = flat screen
+const float CURVATURE_STRENGTH = 0.0;   // barrel distortion; 0.0 = flat screen (big-screen readable)
 const float SCANLINE_STRENGTH  = 0.12;  // 0.0–0.3; darkness of scanlines
 const float GLOW_STRENGTH      = 0.06;  // horizontal phosphor smear/bloom
-const float VIGNETTE_STRENGTH  = 0.25;  // corner darkening
+const float VIGNETTE_STRENGTH  = 0.0;   // corner darkening; 0.0 = uniform brightness (big-screen readable)
 
 vec2 curve(vec2 uv) {
     uv = uv * 2.0 - 1.0;                 // -1..1

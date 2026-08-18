@@ -15,7 +15,7 @@ font-family = "3270 Nerd Font"
 font-family = "Px437 IBM VGA8"
 font-family = "Menlo"
 # Big-screen friendly. Bump to 22-24 for a large room.
-font-size = 20
+font-size = 24
 # macOS: fatten the strokes for a blockier look
 font-thicken = true
 # A touch of extra line height for that scanline-gap feel
@@ -58,6 +58,10 @@ custom-shader = wopr-crt.glsl
 custom-shader-animation = false
 
 # ── Window / immersion ──
+# Always open at the config font-size above — don't inherit a previous window's
+# size or restore a manual Cmd+ zoom from last session.
+window-inherit-font-size = false
+window-save-state = never
 # CRT wants full opacity for contrast.
 background-opacity = 1.0
 window-padding-x = 16
